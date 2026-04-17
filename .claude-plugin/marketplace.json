@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "unifi-mcp",
+  "description": "MCP server for managing Ubiquiti UniFi Network infrastructure via the local API.",
+  "owner": {
+    "name": "Nigel Van Hattum",
+    "url": "https://github.com/NigelVanHattum"
+  },
+  "plugins": [
+    {
+      "name": "unifi-mcp",
+      "description": "Control UniFi devices, clients, networks, WiFi, firewall, ACL, DNS, VPN and more — all 62 endpoints from UniFi Network API v10.1.84.",
+      "source": "./",
+      "category": "infrastructure"
+    }
+  ]
+}
