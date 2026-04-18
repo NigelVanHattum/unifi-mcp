@@ -1,6 +1,6 @@
 {
   "name": "unifi-mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP server for managing Ubiquiti UniFi Network infrastructure. Covers all API endpoints from UniFi Network API v10.1.84 (local connection).",
   "author": {
     "name": "Nigel Van Hattum",
