@@ -21,6 +21,9 @@ asyncio_mode = "auto"
 [project.scripts]
 unifi-network-mcp = "server:main"
 
+[tool.hatch.build.targets.wheel]
+include = ["server.py", "client.py", "tools/"]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
