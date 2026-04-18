@@ -4,8 +4,6 @@ MCP server for managing Ubiquiti UniFi Network infrastructure via the local cont
 
 ## Prerequisites
 
-- Python 3.11+
-- [`uv`](https://docs.astral.sh/uv/getting-started/installation/) package manager
 - UniFi Network controller (self-hosted, reachable on local network)
 - UniFi API key
 
@@ -19,21 +17,65 @@ MCP server for managing Ubiquiti UniFi Network infrastructure via the local cont
 
 ## Installation
 
-### Option A — Claude Plugin (Cowork / Claude Code)
+### Option A — Claude Plugin (Cowork / Claude Code) ✨ Recommended
 
 1. In Claude, open **Settings** → **Plugins** → **Add from GitHub**
 2. Enter: `https://github.com/NigelVanHattum/unifi-mcp`
-3. Set environment variables when prompted:
+3. Run the **Setup UniFi** skill to configure credentials
 
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `UNIFI_HOST` | ✅ | `192.168.1.1` | Controller IP or hostname |
-| `UNIFI_API_KEY` | ✅ | — | API key from UniFi Site Manager |
-| `UNIFI_VERIFY_SSL` | ❌ | `false` | Set `true` to verify TLS cert |
+The plugin stores credentials in `~/.config/unifi-mcp/config.json` — never in environment variables.
 
-> Controllers use self-signed TLS — leave `UNIFI_VERIFY_SSL=false` unless you've installed a valid cert.
+### Option B — Docker (no Python required)
 
-### Option B — Claude Desktop (manual)
+Pull the pre-built image and run with `docker run -i`:
+
+```bash
+# Using config file (recommended)
+docker run -i --rm \
+  --network=host \
+  -v ~/.config/unifi-mcp:/config:ro \
+  ghcr.io/nigelvanHattum/unifi-mcp:latest
+
+# Using environment variables
+docker run -i --rm \
+  --network=host \
+  -e UNIFI_HOST=192.168.1.1 \
+  -e UNIFI_API_KEY=your-api-key-here \
+  ghcr.io/nigelvanHattum/unifi-mcp:latest
+```
+
+> `--network=host` lets the container reach your local UniFi controller.
+> On Mac, Docker Desktop's host network feature must be enabled (Settings → Resources → Network).
+
+**Claude Desktop config** (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "unifi-network": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "--network=host",
+        "-v", "${HOME}/.config/unifi-mcp:/config:ro",
+        "ghcr.io/nigelvanHattum/unifi-mcp:latest"
+      ]
+    }
+  }
+}
+```
+
+**Claude Code** (manual):
+
+```bash
+claude mcp add unifi-network \
+  --command docker \
+  --args "run -i --rm --network=host -v ${HOME}/.config/unifi-mcp:/config:ro ghcr.io/nigelvanHattum/unifi-mcp:latest"
+```
+
+### Option C — Python / uv (manual)
+
+Requires Python 3.11+ and [`uv`](https://docs.astral.sh/uv/getting-started/installation/).
 
 1. Clone the repo:
    ```bash
@@ -42,41 +84,45 @@ MCP server for managing Ubiquiti UniFi Network infrastructure via the local cont
    uv sync
    ```
 
-2. Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
+2. Create credentials file:
+   ```bash
+   mkdir -p ~/.config/unifi-mcp
+   cat > ~/.config/unifi-mcp/config.json << 'EOF'
+   {
+     "host": "192.168.1.1",
+     "api_key": "your-api-key-here",
+     "verify_ssl": false
+   }
+   EOF
+   ```
+
+3. Add to Claude Desktop config:
    ```json
    {
      "mcpServers": {
        "unifi-network": {
          "command": "uv",
-         "args": ["run", "--project", "/path/to/unifi-mcp", "python", "/path/to/unifi-mcp/server.py"],
-         "env": {
-           "UNIFI_HOST": "192.168.1.1",
-           "UNIFI_API_KEY": "your-api-key-here",
-           "UNIFI_VERIFY_SSL": "false"
-         }
+         "args": ["run", "--project", "/path/to/unifi-mcp", "python", "/path/to/unifi-mcp/server.py"]
        }
      }
    }
    ```
 
-3. Restart Claude Desktop.
+## Credential Resolution Order
 
-### Option C — Claude Code (manual MCP config)
+The server checks these locations in order (first found wins):
 
-```bash
-claude mcp add unifi-network \
-  --command uv \
-  --args "run --project /path/to/unifi-mcp python /path/to/unifi-mcp/server.py" \
-  --env UNIFI_HOST=192.168.1.1 \
-  --env UNIFI_API_KEY=your-api-key-here
-```
+| Priority | Location | Use case |
+|---|---|---|
+| 1 | `$CLAUDE_PLUGIN_ROOT/unifi-config.json` | Claude plugin root |
+| 2 | `~/.config/unifi-mcp/config.json` | Claude plugin / manual install |
+| 3 | `/config/config.json` | Docker volume mount |
+| 4 | `UNIFI_HOST` / `UNIFI_API_KEY` env vars | Docker `-e` / Claude Desktop env block |
 
 ## Verify Connection
 
 Ask Claude:
 > _"List my UniFi sites"_ or _"Get UniFi application info"_
-
-Claude should return data from your controller.
 
 ## Tools Reference
 
@@ -104,7 +150,10 @@ uv sync --extra dev
 # Run tests
 uv run pytest
 
-# Run server directly
+# Build Docker image locally
+docker build -t unifi-mcp .
+
+# Run server directly (for testing)
 UNIFI_HOST=192.168.1.1 UNIFI_API_KEY=your-key uv run python server.py
 ```
 

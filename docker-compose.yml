@@ -1,0 +1,13 @@
+services:
+  unifi-mcp:
+    build: .
+    image: ghcr.io/nigelvanHattum/unifi-mcp:latest
+    stdin_open: true
+    network_mode: host
+    volumes:
+      - ~/.config/unifi-mcp:/config:ro
+    # Alternatively, pass credentials directly:
+    # environment:
+    #   UNIFI_HOST: 192.168.1.1
+    #   UNIFI_API_KEY: your-api-key-here
+    #   UNIFI_VERIFY_SSL: "false"

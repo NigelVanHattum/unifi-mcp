@@ -4,8 +4,9 @@ HTTP client and configuration for UniFi Network API (local connection).
 Config resolution order (first found wins):
   1. $CLAUDE_PLUGIN_ROOT/unifi-config.json  (plugin root — written by setup skill)
   2. ~/.config/unifi-mcp/config.json        (user config dir — written by setup skill)
-  3. Environment variables                   (manual / Claude Desktop config)
-  4. Built-in defaults
+  3. /config/config.json                    (Docker volume mount)
+  4. Environment variables                   (manual / Claude Desktop / docker -e)
+  5. Built-in defaults
 
 Environment variables (when not using config file):
   UNIFI_HOST       - Controller IP or hostname (default: 192.168.1.1)
@@ -41,7 +42,15 @@ def _load_config() -> dict:
         except Exception:
             pass
 
-    # 3. Environment variables
+    # 3. Docker volume mount (-v ~/.config/unifi-mcp:/config:ro)
+    docker_config = Path("/config/config.json")
+    if docker_config.exists():
+        try:
+            return json.loads(docker_config.read_text())
+        except Exception:
+            pass
+
+    # 4. Environment variables
     return {
         "host":       os.environ.get("UNIFI_HOST", "192.168.1.1"),
         "api_key":    os.environ.get("UNIFI_API_KEY", ""),
