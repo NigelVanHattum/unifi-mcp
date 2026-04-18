@@ -1,32 +1,44 @@
 #!/usr/bin/env python3
 """
-UniFi Network MCP Server
-Covers all UniFi Network API v10.1.84 endpoints (local connection type).
+UniFi Network MCP Server — SSE transport (Docker-hosted).
 
-Configuration (environment variables):
-  UNIFI_HOST       - Controller IP or hostname (default: 192.168.1.1)
-  UNIFI_API_KEY    - API key from UniFi Site Manager
-  UNIFI_VERIFY_SSL - Set to "true" to verify SSL (default: false)
+Exposes:
+  GET  /sse        — MCP SSE connection endpoint
+  POST /messages/  — MCP message endpoint (used by SSE transport internally)
+  GET  /health     — liveness check
+
+Configuration:
+  Mount /config/config.json  OR  set UNIFI_HOST / UNIFI_API_KEY env vars.
 """
 
 import json
-import asyncio
+import os
+
 import httpx
 import mcp.types as types
+import uvicorn
 from mcp.server import Server
-from mcp.server.stdio import stdio_server
+from mcp.server.sse import SseServerTransport
+from starlette.applications import Starlette
+from starlette.requests import Request
+from starlette.responses import JSONResponse
+from starlette.routing import Mount, Route
 
 import tools
 
-server = Server("unifi-network")
+# ---------------------------------------------------------------------------
+# MCP server
+# ---------------------------------------------------------------------------
+
+mcp_server = Server("unifi-network")
 
 
-@server.list_tools()
+@mcp_server.list_tools()
 async def list_tools() -> list[types.Tool]:
     return tools.ALL_TOOLS
 
 
-@server.call_tool()
+@mcp_server.call_tool()
 async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
     try:
         result = tools.dispatch(name, arguments)
@@ -37,14 +49,40 @@ async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
         return [types.TextContent(type="text", text=f"Error: {e}")]
 
 
-async def main() -> None:
-    async with stdio_server() as (read_stream, write_stream):
-        await server.run(
-            read_stream,
-            write_stream,
-            server.create_initialization_options(),
+# ---------------------------------------------------------------------------
+# SSE transport + Starlette app
+# ---------------------------------------------------------------------------
+
+sse = SseServerTransport("/messages/")
+
+
+async def handle_sse(request: Request):
+    async with sse.connect_sse(
+        request.scope, request.receive, request._send
+    ) as streams:
+        await mcp_server.run(
+            streams[0], streams[1],
+            mcp_server.create_initialization_options(),
         )
 
 
+async def health(request: Request):
+    return JSONResponse({"status": "ok"})
+
+
+app = Starlette(
+    routes=[
+        Route("/sse", endpoint=handle_sse),
+        Mount("/messages", app=sse.handle_post_message),
+        Route("/health", endpoint=health),
+    ]
+)
+
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
+
 if __name__ == "__main__":
-    asyncio.run(main())
+    host = os.environ.get("SERVER_HOST", "0.0.0.0")
+    port = int(os.environ.get("SERVER_PORT", "8000"))
+    uvicorn.run(app, host=host, port=port)
