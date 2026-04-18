@@ -2,16 +2,13 @@
 HTTP client and configuration for UniFi Network API (local connection).
 
 Config resolution order (first found wins):
-  1. $CLAUDE_PLUGIN_ROOT/unifi-config.json  (plugin root — written by setup skill)
-  2. ~/.config/unifi-mcp/config.json        (user config dir — written by setup skill)
-  3. /config/config.json                    (Docker volume mount)
-  4. Environment variables                   (manual / Claude Desktop / docker -e)
-  5. Built-in defaults
+  1. /config/config.json  — Docker volume mount (-v /host/path:/config:ro)
+  2. Environment variables — UNIFI_HOST / UNIFI_API_KEY / UNIFI_VERIFY_SSL
 
-Environment variables (when not using config file):
+Environment variables:
   UNIFI_HOST       - Controller IP or hostname (default: 192.168.1.1)
   UNIFI_API_KEY    - API key from UniFi Site Manager
-  UNIFI_VERIFY_SSL - "true" to verify TLS (default: false)
+  UNIFI_VERIFY_SSL - "true" to verify TLS cert (default: false)
 """
 
 import json
@@ -23,34 +20,14 @@ import httpx
 
 
 def _load_config() -> dict:
-    """Load config from file (plugin root or ~/.config) or env vars."""
-    # 1. Plugin root (set by Claude when MCP server process starts)
-    plugin_root = os.environ.get("CLAUDE_PLUGIN_ROOT", "")
-    if plugin_root:
-        config_path = Path(plugin_root) / "unifi-config.json"
-        if config_path.exists():
-            try:
-                return json.loads(config_path.read_text())
-            except Exception:
-                pass
-
-    # 2. User config dir (written by setup skill via Cowork file access)
-    user_config = Path.home() / ".config" / "unifi-mcp" / "config.json"
-    if user_config.exists():
+    """Load config from Docker volume mount or environment variables."""
+    config_file = Path("/config/config.json")
+    if config_file.exists():
         try:
-            return json.loads(user_config.read_text())
+            return json.loads(config_file.read_text())
         except Exception:
             pass
 
-    # 3. Docker volume mount (-v ~/.config/unifi-mcp:/config:ro)
-    docker_config = Path("/config/config.json")
-    if docker_config.exists():
-        try:
-            return json.loads(docker_config.read_text())
-        except Exception:
-            pass
-
-    # 4. Environment variables
     return {
         "host":       os.environ.get("UNIFI_HOST", "192.168.1.1"),
         "api_key":    os.environ.get("UNIFI_API_KEY", ""),
