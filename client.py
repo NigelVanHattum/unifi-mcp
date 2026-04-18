@@ -1,20 +1,48 @@
 """
 HTTP client and configuration for UniFi Network API (local connection).
 
-Environment variables:
+Config resolution order (first found wins):
+  1. $CLAUDE_PLUGIN_ROOT/unifi-config.json  (plugin install — written by setup skill)
+  2. Environment variables                   (manual / Claude Desktop config)
+  3. Built-in defaults
+
+Environment variables (when not using config file):
   UNIFI_HOST       - Controller IP or hostname (default: 192.168.1.1)
   UNIFI_API_KEY    - API key from UniFi Site Manager
   UNIFI_VERIFY_SSL - "true" to verify TLS (default: false)
 """
 
+import json
 import os
+from pathlib import Path
 from typing import Any
 
 import httpx
 
-UNIFI_HOST = os.environ.get("UNIFI_HOST", "192.168.1.1")
-UNIFI_API_KEY = os.environ.get("UNIFI_API_KEY", "")
-UNIFI_VERIFY_SSL = os.environ.get("UNIFI_VERIFY_SSL", "false").lower() == "true"
+
+def _load_config() -> dict:
+    """Load config from file (plugin install) or env vars."""
+    plugin_root = os.environ.get("CLAUDE_PLUGIN_ROOT", "")
+    if plugin_root:
+        config_path = Path(plugin_root) / "unifi-config.json"
+        if config_path.exists():
+            try:
+                return json.loads(config_path.read_text())
+            except Exception:
+                pass
+
+    return {
+        "host":       os.environ.get("UNIFI_HOST", "192.168.1.1"),
+        "api_key":    os.environ.get("UNIFI_API_KEY", ""),
+        "verify_ssl": os.environ.get("UNIFI_VERIFY_SSL", "false").lower() == "true",
+    }
+
+
+_cfg = _load_config()
+
+UNIFI_HOST       = _cfg.get("host", "192.168.1.1")
+UNIFI_API_KEY    = _cfg.get("api_key", "")
+UNIFI_VERIFY_SSL = _cfg.get("verify_ssl", False)
 
 BASE_URL = f"https://{UNIFI_HOST}/proxy/network/integration/v1"
 
