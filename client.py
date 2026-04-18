@@ -2,9 +2,10 @@
 HTTP client and configuration for UniFi Network API (local connection).
 
 Config resolution order (first found wins):
-  1. $CLAUDE_PLUGIN_ROOT/unifi-config.json  (plugin install — written by setup skill)
-  2. Environment variables                   (manual / Claude Desktop config)
-  3. Built-in defaults
+  1. $CLAUDE_PLUGIN_ROOT/unifi-config.json  (plugin root — written by setup skill)
+  2. ~/.config/unifi-mcp/config.json        (user config dir — written by setup skill)
+  3. Environment variables                   (manual / Claude Desktop config)
+  4. Built-in defaults
 
 Environment variables (when not using config file):
   UNIFI_HOST       - Controller IP or hostname (default: 192.168.1.1)
@@ -21,7 +22,8 @@ import httpx
 
 
 def _load_config() -> dict:
-    """Load config from file (plugin install) or env vars."""
+    """Load config from file (plugin root or ~/.config) or env vars."""
+    # 1. Plugin root (set by Claude when MCP server process starts)
     plugin_root = os.environ.get("CLAUDE_PLUGIN_ROOT", "")
     if plugin_root:
         config_path = Path(plugin_root) / "unifi-config.json"
@@ -31,6 +33,15 @@ def _load_config() -> dict:
             except Exception:
                 pass
 
+    # 2. User config dir (written by setup skill via Cowork file access)
+    user_config = Path.home() / ".config" / "unifi-mcp" / "config.json"
+    if user_config.exists():
+        try:
+            return json.loads(user_config.read_text())
+        except Exception:
+            pass
+
+    # 3. Environment variables
     return {
         "host":       os.environ.get("UNIFI_HOST", "192.168.1.1"),
         "api_key":    os.environ.get("UNIFI_API_KEY", ""),
