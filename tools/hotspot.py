@@ -17,7 +17,7 @@ TOOLS = [
     types.Tool(
         name="list_vouchers",
         description="List hotspot vouchers on a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId": {"type": "string"},
@@ -31,7 +31,7 @@ TOOLS = [
     types.Tool(
         name="create_vouchers",
         description="Generate one or more hotspot vouchers.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":               {"type": "string"},
@@ -49,7 +49,7 @@ TOOLS = [
     types.Tool(
         name="delete_vouchers",
         description="Delete multiple vouchers by filter expression.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId": {"type": "string"},
@@ -61,7 +61,7 @@ TOOLS = [
     types.Tool(
         name="get_voucher",
         description="Get details of a specific hotspot voucher.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":    {"type": "string"},
@@ -73,7 +73,7 @@ TOOLS = [
     types.Tool(
         name="delete_voucher",
         description="Delete a specific hotspot voucher.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":    {"type": "string"},

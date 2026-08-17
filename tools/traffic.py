@@ -19,7 +19,7 @@ TOOLS = [
     types.Tool(
         name="list_traffic_matching_lists",
         description="List all traffic matching lists on a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId": {"type": "string"},
@@ -33,7 +33,7 @@ TOOLS = [
     types.Tool(
         name="get_traffic_matching_list",
         description="Get a specific traffic matching list.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":                {"type": "string"},
@@ -45,7 +45,7 @@ TOOLS = [
     types.Tool(
         name="create_traffic_matching_list",
         description="Create a traffic matching list. Types: PORTS, IPV4_ADDRESSES, IPV6_ADDRESSES.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId": {"type": "string"},
@@ -59,7 +59,7 @@ TOOLS = [
     types.Tool(
         name="update_traffic_matching_list",
         description="Update an existing traffic matching list.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":                {"type": "string"},
@@ -74,7 +74,7 @@ TOOLS = [
     types.Tool(
         name="delete_traffic_matching_list",
         description="Delete a traffic matching list from a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":                {"type": "string"},

@@ -19,7 +19,7 @@ TOOLS = [
     types.Tool(
         name="list_acl_rules",
         description="List all ACL rules on a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId": {"type": "string"},
@@ -33,7 +33,7 @@ TOOLS = [
     types.Tool(
         name="get_acl_rule",
         description="Get a specific ACL rule.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":    {"type": "string"},
@@ -45,7 +45,7 @@ TOOLS = [
     types.Tool(
         name="create_acl_rule",
         description="Create a new user-defined ACL rule. type: IPV4 or MAC. action: ALLOW or BLOCK.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":               {"type": "string"},
@@ -66,7 +66,7 @@ TOOLS = [
     types.Tool(
         name="update_acl_rule",
         description="Update an existing user-defined ACL rule.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":               {"type": "string"},
@@ -87,7 +87,7 @@ TOOLS = [
     types.Tool(
         name="delete_acl_rule",
         description="Delete a user-defined ACL rule from a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":    {"type": "string"},
@@ -99,7 +99,7 @@ TOOLS = [
     types.Tool(
         name="get_acl_rule_ordering",
         description="Get the ordering of user-defined ACL rules on a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId": {"type": "string"},
@@ -110,7 +110,7 @@ TOOLS = [
     types.Tool(
         name="update_acl_rule_ordering",
         description="Reorder user-defined ACL rules on a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":            {"type": "string"},

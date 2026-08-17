@@ -18,7 +18,7 @@ TOOLS = [
     types.Tool(
         name="list_networks",
         description="List all networks on a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId": {"type": "string"},
@@ -32,7 +32,7 @@ TOOLS = [
     types.Tool(
         name="create_network",
         description="Create a new network on a site. vlanId must be 1 for default, ≥2 for additional.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":       {"type": "string"},
@@ -48,7 +48,7 @@ TOOLS = [
     types.Tool(
         name="get_network",
         description="Get detailed info about a specific network.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":    {"type": "string"},
@@ -60,7 +60,7 @@ TOOLS = [
     types.Tool(
         name="update_network",
         description="Update an existing network on a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":       {"type": "string"},
@@ -77,7 +77,7 @@ TOOLS = [
     types.Tool(
         name="delete_network",
         description="Delete a network from a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":    {"type": "string"},
@@ -90,7 +90,7 @@ TOOLS = [
     types.Tool(
         name="get_network_references",
         description="Get references to a network (clients and devices using it).",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":    {"type": "string"},

@@ -20,7 +20,7 @@ TOOLS = [
     types.Tool(
         name="list_dns_policies",
         description="List all DNS policies on a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId": {"type": "string"},
@@ -34,7 +34,7 @@ TOOLS = [
     types.Tool(
         name="get_dns_policy",
         description="Get a specific DNS policy.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":      {"type": "string"},
@@ -46,7 +46,7 @@ TOOLS = [
     types.Tool(
         name="create_dns_policy",
         description="Create a DNS policy. Types: A_RECORD, AAAA_RECORD, CNAME_RECORD, MX_RECORD, TXT_RECORD, SRV_RECORD, FORWARD_DOMAIN.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":      {"type": "string"},
@@ -62,7 +62,7 @@ TOOLS = [
     types.Tool(
         name="update_dns_policy",
         description="Update an existing DNS policy.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":      {"type": "string"},
@@ -79,7 +79,7 @@ TOOLS = [
     types.Tool(
         name="delete_dns_policy",
         description="Delete a DNS policy from a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":      {"type": "string"},

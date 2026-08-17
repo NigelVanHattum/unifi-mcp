@@ -20,7 +20,7 @@ TOOLS = [
     types.Tool(
         name="list_adopted_devices",
         description="List all adopted devices on a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId": {"type": "string"},
@@ -34,7 +34,7 @@ TOOLS = [
     types.Tool(
         name="adopt_device",
         description="Adopt a device to a site by MAC address.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":            {"type": "string"},
@@ -47,7 +47,7 @@ TOOLS = [
     types.Tool(
         name="get_adopted_device",
         description="Get detailed info about an adopted device (firmware, uplink, ports, radios).",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":   {"type": "string"},
@@ -59,7 +59,7 @@ TOOLS = [
     types.Tool(
         name="remove_device",
         description="Remove (unadopt) a device from a site. Online devices reset to factory defaults.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":   {"type": "string"},
@@ -71,7 +71,7 @@ TOOLS = [
     types.Tool(
         name="get_device_statistics",
         description="Get latest real-time stats for a device: uptime, CPU, memory, tx/rx rates.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":   {"type": "string"},
@@ -83,7 +83,7 @@ TOOLS = [
     types.Tool(
         name="execute_device_action",
         description="Execute an action on an adopted device. Supported action: RESTART.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":   {"type": "string"},
@@ -96,7 +96,7 @@ TOOLS = [
     types.Tool(
         name="execute_port_action",
         description="Execute an action on a device port. Supported action: POWER_CYCLE.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":   {"type": "string"},
@@ -110,7 +110,7 @@ TOOLS = [
     types.Tool(
         name="list_pending_devices",
         description="List devices pending adoption across the controller.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "offset": {"type": "integer"},

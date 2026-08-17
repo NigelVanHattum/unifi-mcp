@@ -8,7 +8,7 @@ TOOLS = [
     types.Tool(
         name="list_sites",
         description="List all local sites managed by this Network application.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "offset": {"type": "integer", "description": "Pagination offset (default 0)"},
