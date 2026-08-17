@@ -15,7 +15,7 @@ TOOLS = [
     types.Tool(
         name="list_clients",
         description="List all connected clients on a site (wired, wireless, VPN).",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId": {"type": "string"},
@@ -29,7 +29,7 @@ TOOLS = [
     types.Tool(
         name="get_client",
         description="Get detailed info about a connected client.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":   {"type": "string"},
@@ -41,7 +41,7 @@ TOOLS = [
     types.Tool(
         name="execute_client_action",
         description="Execute an action on a client. Actions: AUTHORIZE_GUEST_ACCESS, UNAUTHORIZE_GUEST_ACCESS.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":               {"type": "string"},

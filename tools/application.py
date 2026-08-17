@@ -8,7 +8,7 @@ TOOLS = [
     types.Tool(
         name="get_application_info",
         description="Get UniFi Network application version info.",
-        inputSchema={"type": "object", "properties": {}},
+        input_schema={"type": "object", "properties": {}},
     ),
 ]
 

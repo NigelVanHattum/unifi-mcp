@@ -15,7 +15,7 @@ TOOLS = [
     types.Tool(
         name="list_wan_interfaces",
         description="List WAN interface definitions for a site (useful for NAT/network config).",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId": {"type": "string"},
@@ -28,7 +28,7 @@ TOOLS = [
     types.Tool(
         name="list_site_to_site_vpn_tunnels",
         description="List all site-to-site VPN tunnels on a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId": {"type": "string"},
@@ -42,7 +42,7 @@ TOOLS = [
     types.Tool(
         name="list_vpn_servers",
         description="List all VPN servers on a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId": {"type": "string"},

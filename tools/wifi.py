@@ -50,7 +50,7 @@ TOOLS = [
     types.Tool(
         name="list_wifi_broadcasts",
         description="List all WiFi broadcasts (SSIDs) on a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId": {"type": "string"},
@@ -64,7 +64,7 @@ TOOLS = [
     types.Tool(
         name="create_wifi_broadcast",
         description="Create a new WiFi broadcast (SSID) on a site. type: STANDARD or IOT_OPTIMIZED.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": _BROADCAST_PROPS,
             "required": _BROADCAST_REQUIRED,
@@ -73,7 +73,7 @@ TOOLS = [
     types.Tool(
         name="get_wifi_broadcast",
         description="Get detailed info about a WiFi broadcast.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":          {"type": "string"},
@@ -85,7 +85,7 @@ TOOLS = [
     types.Tool(
         name="update_wifi_broadcast",
         description="Update an existing WiFi broadcast.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 **_BROADCAST_PROPS,
@@ -97,7 +97,7 @@ TOOLS = [
     types.Tool(
         name="delete_wifi_broadcast",
         description="Delete a WiFi broadcast from a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":          {"type": "string"},

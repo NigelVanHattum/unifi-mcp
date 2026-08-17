@@ -26,7 +26,7 @@ TOOLS = [
     types.Tool(
         name="list_firewall_zones",
         description="List all firewall zones on a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId": {"type": "string"},
@@ -40,7 +40,7 @@ TOOLS = [
     types.Tool(
         name="get_firewall_zone",
         description="Get a specific firewall zone.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":         {"type": "string"},
@@ -52,7 +52,7 @@ TOOLS = [
     types.Tool(
         name="create_firewall_zone",
         description="Create a new custom firewall zone on a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":     {"type": "string"},
@@ -65,7 +65,7 @@ TOOLS = [
     types.Tool(
         name="update_firewall_zone",
         description="Update a firewall zone.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":         {"type": "string"},
@@ -79,7 +79,7 @@ TOOLS = [
     types.Tool(
         name="delete_firewall_zone",
         description="Delete a custom firewall zone from a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":         {"type": "string"},
@@ -93,7 +93,7 @@ TOOLS = [
     types.Tool(
         name="list_firewall_policies",
         description="List all firewall policies on a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId": {"type": "string"},
@@ -107,7 +107,7 @@ TOOLS = [
     types.Tool(
         name="get_firewall_policy",
         description="Get a specific firewall policy.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":           {"type": "string"},
@@ -119,7 +119,7 @@ TOOLS = [
     types.Tool(
         name="create_firewall_policy",
         description="Create a new firewall policy. action.type: ALLOW, BLOCK, or REJECT.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":                {"type": "string"},
@@ -143,7 +143,7 @@ TOOLS = [
     types.Tool(
         name="update_firewall_policy",
         description="Update an existing firewall policy.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":                {"type": "string"},
@@ -167,7 +167,7 @@ TOOLS = [
     types.Tool(
         name="delete_firewall_policy",
         description="Delete a firewall policy from a site.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":           {"type": "string"},
@@ -179,7 +179,7 @@ TOOLS = [
     types.Tool(
         name="patch_firewall_policy",
         description="Partially update a firewall policy (e.g. toggle loggingEnabled only).",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":           {"type": "string"},
@@ -194,7 +194,7 @@ TOOLS = [
     types.Tool(
         name="get_firewall_policy_ordering",
         description="Get user-defined firewall policy ordering for a source/destination zone pair.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":                   {"type": "string"},
@@ -207,7 +207,7 @@ TOOLS = [
     types.Tool(
         name="update_firewall_policy_ordering",
         description="Reorder user-defined firewall policies for a source/destination zone pair.",
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": {
                 "siteId":                   {"type": "string"},
