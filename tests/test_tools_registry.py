@@ -5,7 +5,7 @@ from collections import Counter
 import tools
 from tools import (
     application, sites, devices, clients, networks,
-    wifi, hotspot, firewall, acl, dns, traffic, supporting,
+    wifi, hotspot, firewall, acl, dns, traffic, supporting, switching,
 )
 
 
@@ -15,7 +15,7 @@ from tools import (
 
 class TestRegistry:
     def test_total_tool_count(self):
-        assert len(tools.ALL_TOOLS) == 62
+        assert len(tools.ALL_TOOLS) == 73
 
     def test_no_duplicate_names(self):
         names = [t.name for t in tools.ALL_TOOLS]
@@ -30,7 +30,7 @@ class TestRegistry:
     def test_tool_names_sets_match_tools(self):
         """Each module's TOOL_NAMES must equal names in its TOOLS list."""
         for mod in [application, sites, devices, clients, networks,
-                    wifi, hotspot, firewall, acl, dns, traffic, supporting]:
+                    wifi, hotspot, firewall, acl, dns, traffic, supporting, switching]:
             declared = {t.name for t in mod.TOOLS}
             assert mod.TOOL_NAMES == declared, \
                 f"{mod.__name__}: TOOL_NAMES mismatch"
@@ -66,4 +66,5 @@ class TestModuleCounts:
     def test_acl(self):          assert len(acl.TOOLS) == 7
     def test_dns(self):          assert len(dns.TOOLS) == 5
     def test_traffic(self):      assert len(traffic.TOOLS) == 5
-    def test_supporting(self):   assert len(supporting.TOOLS) == 3
+    def test_switching(self):    assert len(switching.TOOLS) == 6
+    def test_supporting(self):   assert len(supporting.TOOLS) == 8

@@ -13,6 +13,7 @@ from . import (
     dns,
     traffic,
     supporting,
+    switching,
 )
 
 _MODULES = [
@@ -28,6 +29,7 @@ _MODULES = [
     dns,
     traffic,
     supporting,
+    switching,
 ]
 
 # Aggregated tool list for MCP registration
