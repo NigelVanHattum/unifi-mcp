@@ -562,3 +562,67 @@ class TestSupportingDispatch:
         m = make_api_mock()
         run(supporting, "list_vpn_servers", {"siteId": "s1"}, m)
         m.assert_called_once_with("GET", "/sites/s1/vpn/servers", params={})
+
+    def test_list_countries(self):
+        m = make_api_mock()
+        run(supporting, "list_countries", {"limit": 10}, m)
+        m.assert_called_once_with("GET", "/countries", params={"limit": 10})
+
+    def test_list_dpi_applications(self):
+        m = make_api_mock()
+        run(supporting, "list_dpi_applications", {"offset": 0}, m)
+        m.assert_called_once_with("GET", "/dpi/applications", params={"offset": 0})
+
+    def test_list_dpi_categories(self):
+        m = make_api_mock()
+        run(supporting, "list_dpi_categories", {}, m)
+        m.assert_called_once_with("GET", "/dpi/categories", params={})
+
+    def test_list_device_tags(self):
+        m = make_api_mock()
+        run(supporting, "list_device_tags", {"siteId": "s1"}, m)
+        m.assert_called_once_with("GET", "/sites/s1/device-tags", params={})
+
+    def test_list_radius_profiles(self):
+        m = make_api_mock()
+        run(supporting, "list_radius_profiles", {"siteId": "s1", "filter": "type==PRIMARY"}, m)
+        m.assert_called_once_with("GET", "/sites/s1/radius/profiles",
+                                  params={"filter": "type==PRIMARY"})
+
+
+# ---------------------------------------------------------------------------
+# Switching
+# ---------------------------------------------------------------------------
+
+from tools import switching
+
+class TestSwitchingDispatch:
+    def test_list_lags(self):
+        m = make_api_mock()
+        run(switching, "list_lags", {"siteId": "s1"}, m)
+        m.assert_called_once_with("GET", "/sites/s1/switching/lags", params={})
+
+    def test_get_lag(self):
+        m = make_api_mock()
+        run(switching, "get_lag", {"siteId": "s1", "lagId": "lag1"}, m)
+        m.assert_called_once_with("GET", "/sites/s1/switching/lags/lag1")
+
+    def test_list_mc_lag_domains(self):
+        m = make_api_mock()
+        run(switching, "list_mc_lag_domains", {"siteId": "s1"}, m)
+        m.assert_called_once_with("GET", "/sites/s1/switching/mc-lag-domains", params={})
+
+    def test_get_mc_lag_domain(self):
+        m = make_api_mock()
+        run(switching, "get_mc_lag_domain", {"siteId": "s1", "mcLagDomainId": "mcl1"}, m)
+        m.assert_called_once_with("GET", "/sites/s1/switching/mc-lag-domains/mcl1")
+
+    def test_list_switch_stacks(self):
+        m = make_api_mock()
+        run(switching, "list_switch_stacks", {"siteId": "s1"}, m)
+        m.assert_called_once_with("GET", "/sites/s1/switching/switch-stacks", params={})
+
+    def test_get_switch_stack(self):
+        m = make_api_mock()
+        run(switching, "get_switch_stack", {"siteId": "s1", "switchStackId": "ss1"}, m)
+        m.assert_called_once_with("GET", "/sites/s1/switching/switch-stacks/ss1")
