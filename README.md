@@ -3,7 +3,12 @@
 Docker-hosted MCP server for managing Ubiquiti UniFi Network infrastructure.
 Covers all 62 endpoints from UniFi Network API v10.1.84.
 
-Transport: **SSE** (`http://localhost:8000/sse`) — persistent container, no subprocess spawning.
+Transports — persistent container, no subprocess spawning:
+
+- **Streamable HTTP** (`http://localhost:8000/mcp`), stateless. No `initialize`
+  handshake and no `Mcp-Session-Id`, so clients that do not negotiate a session
+  can call it directly. Use this one unless your client needs SSE.
+- **SSE** (`http://localhost:8000/sse`), the legacy transport, still served.
 
 ## Prerequisites
 
@@ -43,6 +48,12 @@ The server is now running at `http://localhost:8000`. Verify:
 
 ```bash
 curl http://localhost:8000/health
+
+# List the tools without negotiating a session
+curl -X POST http://localhost:8000/mcp \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json, text/event-stream' \
+  -d '{"jsonrpc":"2.0","id":"1","method":"tools/list","params":{}}'
 # {"status": "ok"}
 ```
 
@@ -56,7 +67,7 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 {
   "mcpServers": {
     "unifi-network": {
-      "url": "http://localhost:8000/sse"
+      "url": "http://localhost:8000/mcp"
     }
   }
 }
@@ -67,7 +78,7 @@ Restart Claude Desktop. Ask: _"List my UniFi sites"_
 ### Claude Code
 
 ```bash
-claude mcp add unifi-network --url http://localhost:8000/sse
+claude mcp add unifi-network --url http://localhost:8000/mcp
 ```
 
 ## Configuration

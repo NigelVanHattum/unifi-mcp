@@ -5,9 +5,12 @@ server.py, so an API break in the mcp package (handler signatures, result
 types, transport) would otherwise only surface at runtime.
 """
 
+import json
 from unittest.mock import patch
 
 import mcp.types as types
+import pytest
+from starlette.testclient import TestClient
 
 import server
 import tools
@@ -16,7 +19,7 @@ import tools
 class TestRoutes:
     def test_expected_routes(self):
         paths = {getattr(r, "path", None) for r in server.app.routes}
-        assert {"/sse", "/messages", "/health"} <= paths
+        assert {"/mcp", "/sse", "/messages", "/health"} <= paths
 
 
 class TestListTools:
@@ -46,3 +49,81 @@ class TestCallTool:
         result = await server.call_tool(None, params)
         assert result.is_error is True
         assert "Unknown tool" in result.content[0].text
+
+
+def _json_rpc(response):
+    """Read a JSON-RPC payload from either a JSON or an SSE-framed body."""
+    if "data:" in response.text:
+        for line in response.text.splitlines():
+            if line.startswith("data:"):
+                return json.loads(line[5:].strip())
+    return json.loads(response.text)
+
+
+@pytest.fixture
+def client():
+    # A fresh app per test: the SDK's session manager refuses to run twice on
+    # one instance, so sharing the module-level app breaks the second test.
+    with TestClient(server.build_app("0.0.0.0")) as c:
+        yield c
+
+
+class TestStatelessStreamableHttp:
+    """The /mcp endpoint must answer without an initialize handshake.
+
+    Clients that never negotiate a session — Paperclip's released tool
+    connections among them — get 404 or 400 from a stateful server and cannot
+    recover, so statelessness is the contract here, not an implementation
+    detail.
+    """
+
+    def _post(self, client, payload):
+        return client.post(
+            "/mcp",
+            json=payload,
+            headers={
+                "Accept": "application/json, text/event-stream",
+                "Content-Type": "application/json",
+            },
+        )
+
+    def test_tools_list_without_initialize(self, client):
+        response = self._post(
+            client, {"jsonrpc": "2.0", "id": "x", "method": "tools/list", "params": {}}
+        )
+        assert response.status_code == 200
+        returned = _json_rpc(response)["result"]["tools"]
+        assert [t["name"] for t in returned] == [t.name for t in tools.ALL_TOOLS]
+
+    def test_no_session_is_issued(self, client):
+        response = self._post(
+            client, {"jsonrpc": "2.0", "id": "x", "method": "tools/list", "params": {}}
+        )
+        assert response.headers.get("mcp-session-id") is None
+
+    def test_tools_call_without_initialize(self, client):
+        with patch.object(tools, "dispatch", return_value={"ok": True}) as dispatch:
+            response = self._post(
+                client,
+                {
+                    "jsonrpc": "2.0",
+                    "id": "1",
+                    "method": "tools/call",
+                    "params": {"name": "get_application_info", "arguments": {}},
+                },
+            )
+        assert response.status_code == 200
+        dispatch.assert_called_once_with("get_application_info", {})
+        result = _json_rpc(response)["result"]
+        assert result["isError"] is False
+
+
+class TestBuildApp:
+    def test_forwards_bind_host_so_localhost_rebinding_guard_stays_off(self):
+        """The SDK only allows localhost Host headers when host is its default.
+
+        Obot reaches this server by container IP, so the bind host has to be
+        passed through or every proxied request is rejected.
+        """
+        app = server.build_app("0.0.0.0")
+        assert {getattr(r, "path", None) for r in app.routes} >= {"/mcp", "/health"}
