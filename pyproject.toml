@@ -1,7 +1,7 @@
 [project]
 name = "unifi-network-mcp"
-version = "2.1.0"
-description = "MCP server for UniFi Network API v10.1.84 — Docker-hosted, stateless Streamable HTTP and SSE"
+version = "2.2.0"
+description = "MCP server for UniFi Network API v11.0.94 — Docker-hosted, stateless Streamable HTTP and SSE"
 requires-python = ">=3.11"
 dependencies = [
     "mcp>=2.3.0,<3",
