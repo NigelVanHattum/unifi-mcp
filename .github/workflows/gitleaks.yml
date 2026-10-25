@@ -35,7 +35,6 @@ jobs:
           tar -xzf "$tarball" gitleaks
           sudo install gitleaks /usr/local/bin/gitleaks
 
-      # No .gitleaks.toml here: the default rule set is what this repo needs.
       - name: Scan working tree
         run: gitleaks dir . --redact --no-banner
 
