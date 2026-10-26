@@ -1,7 +1,7 @@
 # UniFi Network MCP Server
 
 Docker-hosted MCP server for managing Ubiquiti UniFi Network infrastructure.
-Covers all 73 endpoints from UniFi Network API v11.0.94.
+Covers all 73 endpoints from UniFi Network API v11.0.97.
 
 Transports — persistent container, no subprocess spawning:
 
@@ -148,4 +148,4 @@ docker compose up
 
 ## API Reference
 
-[UniFi Network API v11.0.94](https://developer.ui.com/network/v11.0.94/gettingstarted)
+[UniFi Network API v11.0.97](https://developer.ui.com/network/v11.0.97/gettingstarted)
